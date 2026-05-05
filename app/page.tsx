@@ -1,6 +1,6 @@
 import { client } from '@/sanity/lib/client'
 import PostCard from './components/PostCard'
-import NavLinks from './components/NavLinks'
+import NavBar from './components/NavBar'
 
 async function getPosts() {
   return client.fetch(`*[_type == "post"] | order(publishedAt desc) {
@@ -14,20 +14,8 @@ export default async function Home() {
   const posts = await getPosts()
 
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh', direction: 'rtl', fontFamily: 'sans-serif' }}>
-
-      <nav style={{
-        borderBottom: '1px solid var(--border)',
-        backdropFilter: 'blur(20px)',
-        background: 'rgba(255,255,255,0.85)',
-        position: 'sticky', top: 0, zIndex: 100,
-      }}>
-        <div style={{ maxWidth: 980, margin: '0 auto', padding: '0 24px', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-         <img src="/logo.svg" alt="راووق" style={{ height: 50, width: 'auto' }} />
-          <NavLinks />
-        </div>
-      </nav>
-
+    <div style={{ minHeight: '100vh', direction: 'rtl', fontFamily: 'sans-serif' }}>
+      <NavBar />
       <section style={{ background: 'var(--bg-secondary)', padding: '80px 24px', textAlign: 'center' }}>
         <div style={{ maxWidth: 680, margin: '0 auto' }}>
           <p style={{ fontSize: 13, fontWeight: 500, color: 'var(--accent)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 16 }}>

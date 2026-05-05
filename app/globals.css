@@ -1,3 +1,5 @@
+@import './font.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -28,10 +30,16 @@ body[data-theme='dark'],
 
 * {
   -webkit-font-smoothing: antialiased;
+  font-family: var(--font) !important;
 }
 
 body {
   background-color: var(--bg);
   color: var(--text-primary);
+  font-family: var(--font) !important;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+[data-theme='dark'] .logo {
+  filter: invert(1);
 }

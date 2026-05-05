@@ -6,7 +6,7 @@ export default function PostCard({ post, featured }: { post: any, featured: bool
     <Link href={`/posts/${post.slug?.current}`} style={{ textDecoration: 'none' }}>
       <article
         style={{
-          background: featured ? 'var(--text-primary)' : 'var(--card-bg)',
+          background: featured ? '#000000' : 'var(--card-bg)',
           padding: '40px 36px',
           transition: 'transform 0.2s ease',
           cursor: 'pointer',
