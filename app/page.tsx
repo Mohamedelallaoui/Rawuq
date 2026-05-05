@@ -1,6 +1,8 @@
 import { client } from '@/sanity/lib/client'
 import PostCard from './components/PostCard'
 import NavBar from './components/NavBar'
+import SocialIcons from './components/SocialIcons'
+
 
 async function getPosts() {
   return client.fetch(`*[_type == "post"] | order(publishedAt desc) {
@@ -51,11 +53,20 @@ export default async function Home() {
         )}
       </section>
 
-      <footer style={{ borderTop: '1px solid var(--border)', padding: '32px 24px', textAlign: 'center' }}>
-        <p style={{ fontSize: 13, color: 'var(--text-tertiary)' }}>
-          © {new Date().getFullYear()}   .جميع الحقوق محفوظة لرَاوُوق.
-        </p>
-      </footer>
+      <footer style={{
+  borderTop: '1px solid var(--border)',
+  padding: '40px 24px',
+  textAlign: 'center',
+  background: 'var(--bg-secondary)'
+}}>
+  <img src="/logo.svg" alt="راووق" style={{ height: 60, marginBottom: 10, opacity: 0.5 }} />
+  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+    <SocialIcons color="var(--text-tertiary)" />
+  </div>
+  <p style={{ fontSize: 13, color: 'var(--text-tertiary)' }}>
+    © {new Date().getFullYear()} راووق. جميع الحقوق محفوظة.
+  </p>
+</footer>
 
     </div>
   )
