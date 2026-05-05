@@ -6,7 +6,9 @@ async function getPosts() {
   return client.fetch(`*[_type == "post"] | order(publishedAt desc) {
     _id, title, slug, publishedAt, excerpt,
     "author": author->name,
-    "categories": categories[]->title
+    "categories": categories[]->title,
+    "mainImage": mainImage.asset->url,
+    "mainImageAlt": mainImage.alt
   }`)
 }
 
