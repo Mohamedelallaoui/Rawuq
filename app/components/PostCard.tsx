@@ -1,23 +1,176 @@
 'use client'
 import Link from 'next/link'
 
-export default function PostCard({ post, featured }: { post: any, featured: boolean }) {
+type PostCardProps = {
+  post: any
+  featured?: boolean
+  size?: 'featured' | 'medium' | 'small' | 'compact'
+}
+
+export default function PostCard({ post, featured, size = 'medium' }: PostCardProps) {
+  // Resolve effective size — `featured` prop takes priority
+  const effectiveSize = featured ? 'featured' : size
+
+  /* ── PER-SIZE DESIGN TOKENS ─────────────────────────────────── */
+  const config = {
+    featured: {
+      imgHeight: 320,
+      titleSize: 28,
+      titleColor: '#ffffff',
+      bg: '#000000',
+      excerptColor: 'rgba(255,255,255,0.65)',
+      metaColor: 'rgba(255,255,255,0.4)',
+      accentColor: '#2997ff',
+      padding: '28px 32px',
+      minHeight: 420,
+      showExcerpt: true,
+      showImage: true,
+      layout: 'vertical' as const,
+    },
+    medium: {
+      imgHeight: 200,
+      titleSize: 20,
+      titleColor: 'var(--text-primary)',
+      bg: 'var(--card-bg)',
+      excerptColor: 'var(--text-secondary)',
+      metaColor: 'var(--text-tertiary)',
+      accentColor: 'var(--accent)',
+      padding: '16px 20px',
+      minHeight: 0,
+      showExcerpt: true,
+      showImage: true,
+      layout: 'vertical' as const,
+    },
+    small: {
+      imgHeight: 140,
+      titleSize: 16,
+      titleColor: 'var(--text-primary)',
+      bg: 'var(--card-bg)',
+      excerptColor: 'var(--text-secondary)',
+      metaColor: 'var(--text-tertiary)',
+      accentColor: 'var(--accent)',
+      padding: '12px 16px',
+      minHeight: 0,
+      showExcerpt: false,
+      showImage: true,
+      layout: 'vertical' as const,
+    },
+    compact: {
+      imgHeight: 80,
+      titleSize: 14,
+      titleColor: 'var(--text-primary)',
+      bg: 'transparent',
+      excerptColor: 'var(--text-secondary)',
+      metaColor: 'var(--text-tertiary)',
+      accentColor: 'var(--accent)',
+      padding: '0',
+      minHeight: 0,
+      showExcerpt: false,
+      showImage: true,
+      layout: 'horizontal' as const,
+    },
+  }
+
+  const c = config[effectiveSize]
+
+  /* ── COMPACT: side-by-side thumbnail + text ─────────────────── */
+  if (c.layout === 'horizontal') {
+    return (
+      <Link
+        href={`/posts/${post.slug?.current}`}
+        style={{ textDecoration: 'none', display: 'block' }}
+      >
+        <article
+          style={{
+            display: 'flex',
+            gap: 12,
+            alignItems: 'flex-start',
+            cursor: 'pointer',
+            direction: 'rtl',
+          }}
+          onMouseEnter={e => {
+            const title = e.currentTarget.querySelector<HTMLElement>('.pc-title')
+            if (title) title.style.color = 'var(--accent)'
+          }}
+          onMouseLeave={e => {
+            const title = e.currentTarget.querySelector<HTMLElement>('.pc-title')
+            if (title) title.style.color = c.titleColor
+          }}
+        >
+          {post.mainImage && (
+            <div style={{
+              width: 88,
+              height: c.imgHeight,
+              flexShrink: 0,
+              borderRadius: 6,
+              overflow: 'hidden',
+              background: 'var(--border)',
+            }}>
+              <img
+                src={post.mainImage}
+                alt={post.mainImageAlt || post.title}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            </div>
+          )}
+
+          <div style={{ flex: 1, paddingTop: 2 }}>
+            {post.categories?.[0] && (
+              <span style={{
+                fontSize: 10, fontWeight: 700, letterSpacing: '0.1em',
+                textTransform: 'uppercase' as const,
+                color: c.accentColor, display: 'block', marginBottom: 5,
+              }}>
+                {post.categories[0]}
+              </span>
+            )}
+            <h3
+              className="pc-title"
+              style={{
+                fontSize: c.titleSize,
+                fontWeight: 700,
+                lineHeight: 1.4,
+                color: c.titleColor,
+                marginBottom: 6,
+                transition: 'color 0.2s',
+              }}
+            >
+              {post.title}
+            </h3>
+            <span style={{ fontSize: 11, color: c.metaColor, display: 'block' }}>
+              {post.author && `${post.author} · `}
+              {post.publishedAt && new Date(post.publishedAt).toLocaleDateString('ar-MA', {
+                month: 'short', day: 'numeric', year: 'numeric',
+              })}
+            </span>
+          </div>
+        </article>
+      </Link>
+    )
+  }
+
+  /* ── VERTICAL (featured / medium / small) ───────────────────── */
   return (
-    <Link href={`/posts/${post.slug?.current}`} style={{ textDecoration: 'none' }}>
+    <Link
+      href={`/posts/${post.slug?.current}`}
+      style={{ textDecoration: 'none', display: 'block', height: '100%' }}
+    >
       <article
         style={{
-          background: featured ? '#000000' : 'var(--card-bg)',
-          borderRadius: 18,
+          background: c.bg,
+          borderRadius: effectiveSize === 'featured' ? 16 : 10,
           overflow: 'hidden',
-          transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+          transition: 'transform 0.25s ease, box-shadow 0.25s ease',
           cursor: 'pointer',
-          border: '1px solid var(--border)',
-          minHeight: featured ? 400 : 280,
-          position: 'relative',
+          border: effectiveSize !== 'featured' ? '1px solid var(--border)' : 'none',
+          minHeight: c.minHeight || 'auto',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
         }}
         onMouseEnter={e => {
-          e.currentTarget.style.transform = 'translateY(-4px)'
-          e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.15)'
+          e.currentTarget.style.transform = 'translateY(-3px)'
+          e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.12)'
         }}
         onMouseLeave={e => {
           e.currentTarget.style.transform = 'translateY(0)'
@@ -25,59 +178,65 @@ export default function PostCard({ post, featured }: { post: any, featured: bool
         }}
       >
         {/* Image */}
-        {post.mainImage && (
+        {post.mainImage && c.showImage && (
           <div style={{
             width: '100%',
-            height: featured ? 280 : 180,
+            height: c.imgHeight,
             overflow: 'hidden',
+            flexShrink: 0,
           }}>
             <img
               src={post.mainImage}
               alt={post.mainImageAlt || post.title}
               style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
+                width: '100%', height: '100%', objectFit: 'cover',
                 transition: 'transform 0.4s ease',
+                display: 'block',
               }}
+              onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.04)')}
+              onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
             />
           </div>
         )}
 
         {/* Content */}
-        <div style={{ padding: featured ? '32px 36px' : '20px 24px' }}>
+        <div style={{ padding: c.padding, flex: 1, display: 'flex', flexDirection: 'column' }}>
           {post.categories?.[0] && (
             <span style={{
-              fontSize: 11, fontWeight: 600, letterSpacing: '0.1em',
+              fontSize: 10, fontWeight: 700, letterSpacing: '0.12em',
               textTransform: 'uppercase' as const,
-              color: featured ? '#2997ff' : 'var(--accent)',
-              display: 'block', marginBottom: 10
+              color: c.accentColor, display: 'block', marginBottom: 8,
             }}>
               {post.categories[0]}
             </span>
           )}
           <h2 style={{
-            fontSize: featured ? 28 : 18,
+            fontSize: c.titleSize,
             fontWeight: 700,
-            lineHeight: 1.3,
-            color: featured ? '#ffffff' : 'var(--text-primary)',
-            marginBottom: 10,
+            lineHeight: 1.35,
+            color: c.titleColor,
+            marginBottom: 8,
+            flex: 1,
           }}>
             {post.title}
           </h2>
-          {post.excerpt && (
+          {c.showExcerpt && post.excerpt && (
             <p style={{
-              fontSize: 14, lineHeight: 1.7,
-              color: featured ? 'rgba(255,255,255,0.65)' : 'var(--text-secondary)',
-              marginBottom: 16
-            }}>
+              fontSize: 13, lineHeight: 1.7,
+              color: c.excerptColor,
+              marginBottom: 14,
+              display: '-webkit-box',
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            } as any}>
               {post.excerpt}
             </p>
           )}
-          <span style={{ fontSize: 12, color: featured ? 'rgba(255,255,255,0.4)' : 'var(--text-tertiary)' }}>
+          <span style={{ fontSize: 11, color: c.metaColor, marginTop: 'auto', display: 'block' }}>
             {post.author && `${post.author} · `}
             {post.publishedAt && new Date(post.publishedAt).toLocaleDateString('ar-MA', {
-              month: 'long', day: 'numeric', year: 'numeric'
+              month: 'long', day: 'numeric', year: 'numeric',
             })}
           </span>
         </div>

@@ -27,7 +27,7 @@ export default function NavBar() {
             src="/logo.svg"
             alt="راووق"
             className="logo"
-            style={{ height: 60, width: 'auto', cursor: 'pointer' }}
+            style={{ height: 18, width: 'auto', cursor: 'pointer' }}
           />
         </Link>
 
