@@ -51,7 +51,7 @@ export default async function Home() {
           <div style={{ textAlign: 'center', flex: 1 }}>
             <img
               src="/logo.svg" alt="راووق" className="logo"
-              style={{ height: 30, margin: '0 auto', display: 'block' }}
+              style={{ height: 520, margin: '0 auto', display: 'block' }}
             />
             <p style={{
               fontSize: 10, letterSpacing: '0.25em', textTransform: 'uppercase',
@@ -191,7 +191,7 @@ export default async function Home() {
       }}>
         <img
           src="/logo.svg" alt="راووق" className="logo"
-          style={{ height: 60, marginBottom: '40', opacity: 0.5, display: 'block', margin: '0 auto 12px' }}
+          style={{ height: 26, marginBottom: 12, opacity: 0.5, display: 'block', margin: '0 auto 12px' }}
         />
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
           <SocialIcons color="var(--text-tertiary)" />

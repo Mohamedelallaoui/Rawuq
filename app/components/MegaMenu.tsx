@@ -12,16 +12,17 @@ export default function MegaMenu() {
   const [activeDesktop, setActiveDesktop] = useState<string | null>(null)
   const [expandedMobile, setExpandedMobile] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
-  const closeTimer = useRef<NodeJS.Timeout>()
+  // Fix: use number (browser setTimeout returns number, not NodeJS.Timeout)
+  const closeTimer = useRef<number | null>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
 
   const handleMouseEnter = (name: string) => {
-    clearTimeout(closeTimer.current)
+    if (closeTimer.current !== null) clearTimeout(closeTimer.current)
     setActiveDesktop(name)
   }
 
   const handleMouseLeave = () => {
-    closeTimer.current = setTimeout(() => setActiveDesktop(null), 200)
+    closeTimer.current = window.setTimeout(() => setActiveDesktop(null), 200)
   }
 
   const handleSearch = () => {
@@ -38,13 +39,12 @@ export default function MegaMenu() {
 
   const activeCat = categories.find(c => c.name === activeDesktop)
 
-  /* ── DESIGN TOKENS ─────────────────────────────────────────── */
-  const navBg    = dark ? 'rgba(18,18,18,0.98)' : 'rgba(255,255,255,0.98)'
+  const navBg       = dark ? 'rgba(18,18,18,0.98)' : 'rgba(255,255,255,0.98)'
   const textColor    = dark ? '#f5f5f7' : '#1d1d1f'
   const subTextColor = dark ? '#a1a1a6' : '#6e6e73'
   const borderColor  = dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'
-  const bg       = dark ? '#000' : '#fff'
-  const inputBg  = dark ? '#1c1c1e' : '#f5f5f7'
+  const bg           = dark ? '#000' : '#fff'
+  const inputBg      = dark ? '#1c1c1e' : '#f5f5f7'
 
   return (
     <>
@@ -133,16 +133,14 @@ export default function MegaMenu() {
       {/* ── MOBILE HAMBURGER BUTTON ───────────────────────────────── */}
       <button
         className="mega-mobile-btn"
-        onClick={() => {
-          setMobileOpen(!mobileOpen)
-          // Auto-focus search after panel opens
-          if (!mobileOpen) setTimeout(() => searchInputRef.current?.focus(), 300)
-        }}
+        onClick={() => setMobileOpen(v => !v)}
         aria-label={mobileOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
         style={{
           background: 'none', border: 'none', cursor: 'pointer',
-          padding: '8px 4px', color: dark ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.75)',
+          padding: '8px 4px',
+          color: dark ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.75)',
           display: 'flex', flexDirection: 'column', gap: 5, alignItems: 'center',
+          flexShrink: 0,
         }}
       >
         <span style={{
@@ -165,21 +163,23 @@ export default function MegaMenu() {
       {/* ── MOBILE FULL-SCREEN PANEL ──────────────────────────────── */}
       {mobileOpen && (
         <div style={{
-          position: 'fixed', inset: 0, zIndex: 998,
+          position: 'fixed', inset: 0,
+          // 9999 ensures it escapes any stacking context in the nav
+          zIndex: 9999,
           background: bg, overflowY: 'auto',
           direction: 'rtl',
           WebkitOverflowScrolling: 'touch',
-          /* Prevent body scroll while panel is open */
           overscrollBehavior: 'contain',
         }}>
 
-          {/* Panel header */}
+          {/* Panel header — logo RIGHT, close LEFT (RTL) */}
           <div style={{
             display: 'flex', alignItems: 'center',
             justifyContent: 'space-between',
             padding: '0 16px', height: 44,
             borderBottom: `1px solid ${borderColor}`,
             position: 'sticky', top: 0, background: bg, zIndex: 1,
+            direction: 'rtl',
           }}>
             <Link href="/" onClick={() => setMobileOpen(false)}>
               <img src="/logo.svg" alt="راووق" className="logo" style={{ height: 18 }} />
@@ -201,12 +201,7 @@ export default function MegaMenu() {
 
           {/* ── SEARCH BAR ── */}
           <div style={{ padding: '10px 14px', borderBottom: `1px solid ${borderColor}` }}>
-            <div style={{
-              display: 'flex', gap: 8, alignItems: 'center',
-              /* Constrain to viewport width minus padding */
-              width: '100%',
-              boxSizing: 'border-box',
-            }}>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', direction: 'rtl' }}>
               <input
                 ref={searchInputRef}
                 value={searchQuery}
@@ -218,14 +213,11 @@ export default function MegaMenu() {
                 autoCapitalize="off"
                 spellCheck={false}
                 style={{
-                  /* flex: 1 lets it fill remaining space; min-width: 0 prevents overflow */
-                  flex: 1,
-                  minWidth: 0,
+                  flex: 1, minWidth: 0,
                   height: 38,
                   padding: '0 12px',
                   border: `1px solid ${borderColor}`,
                   borderRadius: 8,
-                  /* 16px prevents iOS auto-zoom on focus */
                   fontSize: 16,
                   background: inputBg,
                   color: textColor,
@@ -238,17 +230,12 @@ export default function MegaMenu() {
               <button
                 onClick={handleSearch}
                 style={{
-                  height: 38,
-                  /* Fixed px width so it never grows/shrinks */
-                  width: 64,
-                  flexShrink: 0,
+                  height: 38, width: 64, flexShrink: 0,
                   background: searchQuery.trim() ? 'var(--accent)' : (dark ? '#3a3a3c' : '#d2d2d7'),
                   color: searchQuery.trim() ? '#fff' : subTextColor,
-                  border: 'none',
-                  borderRadius: 8,
-                  fontSize: 14,
+                  border: 'none', borderRadius: 8,
+                  fontSize: 14, fontWeight: 600,
                   cursor: searchQuery.trim() ? 'pointer' : 'default',
-                  fontWeight: 600,
                   transition: 'background 0.2s',
                 }}
               >
@@ -270,7 +257,7 @@ export default function MegaMenu() {
             }}
           >
             الرئيسية
-            <span style={{ color: subTextColor, fontSize: 18 }}>›</span>
+            <span style={{ color: subTextColor, fontSize: 18 }}>‹</span>
           </Link>
 
           {/* ── CATEGORIES WITH ACCORDION ── */}
@@ -292,9 +279,9 @@ export default function MegaMenu() {
                   fontSize: 18, color: subTextColor,
                   transition: 'transform 0.25s',
                   display: 'inline-block',
-                  transform: expandedMobile === cat.name ? 'rotate(90deg)' : 'rotate(0deg)',
+                  transform: expandedMobile === cat.name ? 'rotate(-90deg)' : 'rotate(0deg)',
                 }}>
-                  ›
+                  ‹
                 </span>
               </button>
 
@@ -334,7 +321,6 @@ export default function MegaMenu() {
             </div>
           ))}
 
-          {/* Safe-area bottom padding */}
           <div style={{ height: 'env(safe-area-inset-bottom, 20px)', minHeight: 20 }} />
         </div>
       )}
@@ -342,9 +328,6 @@ export default function MegaMenu() {
       <style>{`
         @media (max-width: 768px)  { .mega-desktop-menu { display: none !important; } }
         @media (min-width: 769px)  { .mega-mobile-btn   { display: none !important; } }
-
-        /* Prevent body scroll when panel is open */
-        body.mobile-menu-open { overflow: hidden; }
       `}</style>
     </>
   )
