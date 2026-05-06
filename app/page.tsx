@@ -29,29 +29,36 @@ export default async function Home() {
       <header style={{
         borderBottom: '3px double var(--border)',
         background: 'var(--bg)',
-        padding: '14px 16px 10px',
+        padding: '10px 16px 8px',
         textAlign: 'center',
       }}>
-        <div style={{ borderTop: '1px solid var(--border)', marginBottom: 8 }} />
+        <div style={{ borderTop: '1px solid var(--border)', marginBottom: 6 }} />
 
         <div style={{
-          display: 'flex', alignItems: 'center',
+          display: 'flex',
+          alignItems: 'center',
           justifyContent: 'space-between',
-          maxWidth: 1100, margin: '0 auto',
-          flexWrap: 'wrap', gap: 6,
+          maxWidth: 1100,
+          margin: '0 auto',
+          gap: 8,
         }}>
-          <span className="masthead-date" style={{
-            fontSize: 11, color: 'var(--text-tertiary)', letterSpacing: '0.04em',
+          {/* Date — hidden on mobile to give logo room */}
+          <span className="masthead-meta" style={{
+            fontSize: 11, color: 'var(--text-tertiary)',
+            letterSpacing: '0.04em', whiteSpace: 'nowrap',
           }}>
             {new Date().toLocaleDateString('ar-SA', {
               weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
             })}
           </span>
 
-          <div style={{ textAlign: 'center', flex: 1 }}>
+          {/* Logo — constrained so it never blows up on mobile */}
+          <div style={{ flex: 1, textAlign: 'center' }}>
             <img
-              src="/logo.svg" alt="راووق" className="logo"
-              style={{ height: 520, margin: '0 auto', display: 'block' }}
+              src="/logo.svg"
+              alt="راووق"
+              className="logo masthead-logo"
+              style={{ margin: '0 auto', display: 'block' }}
             />
             <p style={{
               fontSize: 10, letterSpacing: '0.25em', textTransform: 'uppercase',
@@ -61,14 +68,16 @@ export default async function Home() {
             </p>
           </div>
 
-          <span className="masthead-edition" style={{
-            fontSize: 11, color: 'var(--text-tertiary)', letterSpacing: '0.04em',
+          {/* Edition — hidden on mobile */}
+          <span className="masthead-meta" style={{
+            fontSize: 11, color: 'var(--text-tertiary)',
+            letterSpacing: '0.04em', whiteSpace: 'nowrap',
           }}>
             الإصدار الرقمي
           </span>
         </div>
 
-        <div style={{ borderTop: '1px solid var(--border)', marginTop: 8 }} />
+        <div style={{ borderTop: '1px solid var(--border)', marginTop: 6 }} />
       </header>
 
       {/* ── MAIN CONTENT ───────────────────────────────────────────── */}
@@ -77,13 +86,10 @@ export default async function Home() {
         {posts.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '80px 0' }}>
             <p style={{ color: 'var(--text-tertiary)', fontSize: 17 }}>لا توجد مقالات بعد.</p>
-            <a
-              href="/studio"
-              style={{
-                display: 'inline-block', marginTop: 16,
-                fontSize: 15, color: 'var(--accent)', textDecoration: 'none',
-              }}
-            >
+            <a href="/studio" style={{
+              display: 'inline-block', marginTop: 16,
+              fontSize: 15, color: 'var(--accent)', textDecoration: 'none',
+            }}>
               أضف أول مقال في الاستوديو ←
             </a>
           </div>
@@ -101,9 +107,8 @@ export default async function Home() {
               <section style={{ borderBottom: '1px solid var(--border)' }}>
                 <div className="np-two-col">
                   {secondary.map((post: any, i: number) => (
-                    <div
-                      key={post._id}
-                      className={i === 1 ? 'np-two-col__right-border' : ''}
+                    <div key={post._id}
+                      className={i === 1 ? 'np-two-col__border' : ''}
                       style={{ padding: '20px 0' }}
                     >
                       <PostCard post={post} size="medium" />
@@ -115,17 +120,11 @@ export default async function Home() {
 
             {/* ── SECTION LABEL ────────────────────────────────────── */}
             {tertiary.length > 0 && (
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 12,
-                padding: '18px 0 0',
-              }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '18px 0 0' }}>
                 <span style={{
                   fontSize: 10, fontWeight: 700, letterSpacing: '0.15em',
-                  textTransform: 'uppercase', color: 'var(--accent)',
-                  whiteSpace: 'nowrap',
-                }}>
-                  أحدث الأخبار
-                </span>
+                  textTransform: 'uppercase', color: 'var(--accent)', whiteSpace: 'nowrap',
+                }}>أحدث الأخبار</span>
                 <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
               </div>
             )}
@@ -135,8 +134,7 @@ export default async function Home() {
               <section style={{ borderBottom: '1px solid var(--border)' }}>
                 <div className="np-three-col">
                   {tertiary.map((post: any, i: number) => (
-                    <div
-                      key={post._id}
+                    <div key={post._id}
                       className={i > 0 ? 'np-three-col__border' : ''}
                       style={{ padding: '16px 0' }}
                     >
@@ -150,27 +148,17 @@ export default async function Home() {
             {/* ── REST: COMPACT LIST ────────────────────────────────── */}
             {rest.length > 0 && (
               <>
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: 12,
-                  padding: '18px 0 0',
-                }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '18px 0 0' }}>
                   <span style={{
                     fontSize: 10, fontWeight: 700, letterSpacing: '0.15em',
-                    textTransform: 'uppercase', color: 'var(--text-secondary)',
-                    whiteSpace: 'nowrap',
-                  }}>
-                    المزيد من المقالات
-                  </span>
+                    textTransform: 'uppercase', color: 'var(--text-secondary)', whiteSpace: 'nowrap',
+                  }}>المزيد من المقالات</span>
                   <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
                 </div>
-
                 <section style={{ padding: '4px 0' }}>
                   <div className="np-four-col">
                     {rest.map((post: any) => (
-                      <div
-                        key={post._id}
-                        style={{ padding: '14px 0', borderBottom: '1px solid var(--border)' }}
-                      >
+                      <div key={post._id} style={{ padding: '14px 0', borderBottom: '1px solid var(--border)' }}>
                         <PostCard post={post} size="compact" />
                       </div>
                     ))}
@@ -185,14 +173,12 @@ export default async function Home() {
       {/* ── FOOTER ─────────────────────────────────────────────────── */}
       <footer style={{
         borderTop: '3px double var(--border)',
-        padding: '36px 16px',
+        padding: '32px 16px',
         textAlign: 'center',
         background: 'var(--bg-secondary)',
       }}>
-        <img
-          src="/logo.svg" alt="راووق" className="logo"
-          style={{ height: 26, marginBottom: 12, opacity: 0.5, display: 'block', margin: '0 auto 12px' }}
-        />
+        <img src="/logo.svg" alt="راووق" className="logo"
+          style={{ height: 24, opacity: 0.5, display: 'block', margin: '0 auto 12px' }} />
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
           <SocialIcons color="var(--text-tertiary)" />
         </div>
@@ -201,29 +187,37 @@ export default async function Home() {
         </p>
       </footer>
 
-      {/* ── RESPONSIVE GRID STYLES ─────────────────────────────────── */}
       <style>{`
+        /* ── Masthead logo: small on mobile, larger on desktop ── */
+        .masthead-logo {
+          height: 28px;   /* mobile default */
+          width: auto;
+          max-width: 120px;
+        }
+        @media (min-width: 640px) {
+          .masthead-logo { height: 36px; max-width: 160px; }
+        }
+
+        /* ── Hide date/edition on small screens ── */
+        @media (max-width: 479px) {
+          .masthead-meta { display: none; }
+        }
+
         /* ── Two-column grid ─────────────────────────── */
         .np-two-col {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 0 16px;
         }
-        .np-two-col__right-border {
+        .np-two-col__border {
           border-right: 1px solid var(--border);
           padding-right: 16px;
         }
-
-        /* Stack on mobile */
         @media (max-width: 599px) {
-          .np-two-col {
-            grid-template-columns: 1fr;
-            gap: 0;
-          }
-          .np-two-col__right-border {
-            border-right: none;
+          .np-two-col { grid-template-columns: 1fr; gap: 0; }
+          .np-two-col__border {
+            border-right: none; padding-right: 0;
             border-top: 1px solid var(--border);
-            padding-right: 0;
           }
         }
 
@@ -237,40 +231,19 @@ export default async function Home() {
           border-right: 1px solid var(--border);
           padding-right: 16px;
         }
-
-        /* Two columns on tablet */
         @media (max-width: 767px) {
-          .np-three-col {
-            grid-template-columns: 1fr 1fr;
-          }
-          /* Reset all borders, re-apply only for even children (right column) */
-          .np-three-col__border {
-            border-right: none;
-            padding-right: 0;
-          }
+          .np-three-col { grid-template-columns: 1fr 1fr; }
+          .np-three-col__border { border-right: none; padding-right: 0; }
           .np-three-col > div:nth-child(even) {
-            border-right: 1px solid var(--border);
-            padding-right: 12px;
+            border-right: 1px solid var(--border); padding-right: 12px;
           }
-          .np-three-col > div {
-            border-bottom: 1px solid var(--border);
-          }
-          .np-three-col > div:last-child {
-            border-bottom: none;
-          }
+          .np-three-col > div { border-bottom: 1px solid var(--border); }
+          .np-three-col > div:last-child { border-bottom: none; }
         }
-
-        /* Single column on small mobile */
         @media (max-width: 479px) {
-          .np-three-col {
-            grid-template-columns: 1fr;
-          }
+          .np-three-col { grid-template-columns: 1fr; }
           .np-three-col > div:nth-child(even) {
-            border-right: none !important;
-            padding-right: 0 !important;
-          }
-          .np-three-col > div {
-            border-bottom: 1px solid var(--border);
+            border-right: none !important; padding-right: 0 !important;
           }
         }
 
@@ -280,25 +253,11 @@ export default async function Home() {
           grid-template-columns: repeat(4, 1fr);
           gap: 0 20px;
         }
-
         @media (max-width: 899px) {
-          .np-four-col {
-            grid-template-columns: 1fr 1fr;
-            gap: 0 14px;
-          }
+          .np-four-col { grid-template-columns: 1fr 1fr; gap: 0 14px; }
         }
         @media (max-width: 499px) {
-          .np-four-col {
-            grid-template-columns: 1fr;
-            gap: 0;
-          }
-        }
-
-        /* ── Masthead date/edition hide on small screens ── */
-        @media (max-width: 479px) {
-          .masthead-date, .masthead-edition {
-            display: none;
-          }
+          .np-four-col { grid-template-columns: 1fr; gap: 0; }
         }
       `}</style>
     </div>
