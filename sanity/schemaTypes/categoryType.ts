@@ -9,10 +9,12 @@ export const categoryType = defineType({
   fields: [
     defineField({
       name: 'title',
+      title: 'الاسم',
       type: 'string',
     }),
     defineField({
       name: 'slug',
+      title: 'الرابط',
       type: 'slug',
       options: {
         source: 'title',
@@ -20,7 +22,27 @@ export const categoryType = defineType({
     }),
     defineField({
       name: 'description',
+      title: 'الوصف',
       type: 'text',
     }),
+    defineField({
+      name: 'parent',
+      title: 'التصنيف الرئيسي',
+      type: 'reference',
+      to: [{type: 'category'}],
+      description: 'اتركه فارغاً إذا كان هذا تصنيفاً رئيسياً',
+    }),
   ],
+  preview: {
+    select: {
+      title: 'title',
+      parent: 'parent.title',
+    },
+    prepare({ title, parent }) {
+      return {
+        title,
+        subtitle: parent ? `← ${parent}` : 'تصنيف رئيسي',
+      }
+    },
+  },
 })

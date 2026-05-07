@@ -105,7 +105,8 @@
     "fields": [
       {
         "name": "title",
-        "type": "string"
+        "type": "string",
+        "title": "الاسم"
       },
       {
         "options": {
@@ -122,11 +123,24 @@
           }
         ],
         "name": "slug",
-        "type": "slug"
+        "type": "slug",
+        "title": "الرابط"
       },
       {
         "name": "description",
-        "type": "text"
+        "type": "text",
+        "title": "الوصف"
+      },
+      {
+        "description": "اتركه فارغاً إذا كان هذا تصنيفاً رئيسياً",
+        "to": [
+          {
+            "type": "category"
+          }
+        ],
+        "name": "parent",
+        "type": "reference",
+        "title": "التصنيف الرئيسي"
       }
     ],
     "name": "category",

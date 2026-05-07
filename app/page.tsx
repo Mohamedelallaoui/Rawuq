@@ -27,12 +27,12 @@ export default async function Home() {
 
       {/* ── NEWSPAPER MASTHEAD ─────────────────────────────────────── */}
       <header style={{
-        borderBottom: '3px double var(--border)',
         background: 'var(--bg)',
-        padding: '10px 16px 8px',
+        padding: '5px 8px 4px',
         textAlign: 'center',
+         overflow: 'hidden', // ← clip anything that sticks out
       }}>
-        <div style={{ borderTop: '1px solid var(--border)', marginBottom: 6 }} />
+        <div style={{ borderTop: 0 , marginBottom: 6 }} />
 
         <div style={{
           display: 'flex',
@@ -58,11 +58,11 @@ export default async function Home() {
               src="/logo.svg"
               alt="راووق"
               className="logo masthead-logo"
-              style={{ margin: '0 auto', display: 'block' }}
+              style={{ margin: '0 auto', display: 'block', height: 120, width: 'auto'}}
             />
             <p style={{
               fontSize: 10, letterSpacing: '0.25em', textTransform: 'uppercase',
-              color: 'var(--text-tertiary)', marginTop: 4,
+              color: 'var(--text-tertiary)', marginTop: -20,
             }}>
               منصة أخبار التقنية
             </p>
@@ -77,13 +77,11 @@ export default async function Home() {
           </span>
         </div>
 
-        <div style={{ borderTop: '1px solid var(--border)', marginTop: 6 }} />
+        <div style={{ borderTop: 0, marginTop: 6 }} />
       </header>
 
-      {/* ── MAIN CONTENT ───────────────────────────────────────────── */}
-      <main style={{ maxWidth: 1100, margin: '0 auto', padding: '0 12px 64px' }}>
-
-        {posts.length === 0 ? (
+      {posts.length === 0 ? (
+        <main style={{ maxWidth: 1100, margin: '0 auto', padding: '0 12px 64px' }}>
           <div style={{ textAlign: 'center', padding: '80px 0' }}>
             <p style={{ color: 'var(--text-tertiary)', fontSize: 17 }}>لا توجد مقالات بعد.</p>
             <a href="/studio" style={{
@@ -93,18 +91,25 @@ export default async function Home() {
               أضف أول مقال في الاستوديو ←
             </a>
           </div>
-        ) : (
-          <>
-            {/* ── TIER 1: HERO ─────────────────────────────────────── */}
-            {hero && (
-              <section style={{ borderBottom: '2px solid var(--text-primary)', padding: '20px 0' }}>
-                <PostCard post={hero} featured />
-              </section>
-            )}
+        </main>
+      ) : (
+        <>
+          {/* ── TIER 1: HERO — FULL WIDTH (outside main container) ── */}
+          {hero && (
+            <section style={{
+              width: '100%',
+              borderBottom: '2px solid var(--text-primary)',
+            }}>
+              <PostCard post={hero} featured />
+            </section>
+          )}
+
+          {/* ── MAIN CONTENT ───────────────────────────────────────── */}
+          <main style={{ maxWidth: 1100, margin: '0 auto', padding: '0 12px 64px' }}>
 
             {/* ── TIER 2: TWO SECONDARY STORIES ───────────────────── */}
             {secondary.length > 0 && (
-              <section style={{ borderBottom: '1px solid var(--border)' }}>
+              <section style={{ borderBottom: 0 }}>
                 <div className="np-two-col">
                   {secondary.map((post: any, i: number) => (
                     <div key={post._id}
@@ -131,7 +136,7 @@ export default async function Home() {
 
             {/* ── TIER 3: THREE TERTIARY STORIES ───────────────────── */}
             {tertiary.length > 0 && (
-              <section style={{ borderBottom: '1px solid var(--border)' }}>
+              <section style={{ borderBottom: 0 }}>
                 <div className="np-three-col">
                   {tertiary.map((post: any, i: number) => (
                     <div key={post._id}
@@ -158,7 +163,7 @@ export default async function Home() {
                 <section style={{ padding: '4px 0' }}>
                   <div className="np-four-col">
                     {rest.map((post: any) => (
-                      <div key={post._id} style={{ padding: '14px 0', borderBottom: '1px solid var(--border)' }}>
+                      <div key={post._id} style={{ padding: '14px 0', borderBottom: 0 }}>
                         <PostCard post={post} size="compact" />
                       </div>
                     ))}
@@ -166,9 +171,10 @@ export default async function Home() {
                 </section>
               </>
             )}
-          </>
-        )}
-      </main>
+
+          </main>
+        </>
+      )}
 
       {/* ── FOOTER ─────────────────────────────────────────────────── */}
       <footer style={{
@@ -190,7 +196,7 @@ export default async function Home() {
       <style>{`
         /* ── Masthead logo: small on mobile, larger on desktop ── */
         .masthead-logo {
-          height: 28px;   /* mobile default */
+          height: 28px;
           width: auto;
           max-width: 120px;
         }
@@ -210,14 +216,14 @@ export default async function Home() {
           gap: 0 16px;
         }
         .np-two-col__border {
-          border-right: 1px solid var(--border);
+          border-right: 0;
           padding-right: 16px;
         }
         @media (max-width: 599px) {
           .np-two-col { grid-template-columns: 1fr; gap: 0; }
           .np-two-col__border {
             border-right: none; padding-right: 0;
-            border-top: 1px solid var(--border);
+            border-top: 0;
           }
         }
 
@@ -228,16 +234,16 @@ export default async function Home() {
           gap: 0 16px;
         }
         .np-three-col__border {
-          border-right: 1px solid var(--border);
+          border-right: 0;
           padding-right: 16px;
         }
         @media (max-width: 767px) {
           .np-three-col { grid-template-columns: 1fr 1fr; }
           .np-three-col__border { border-right: none; padding-right: 0; }
           .np-three-col > div:nth-child(even) {
-            border-right: 1px solid var(--border); padding-right: 12px;
+            border-right: 0; padding-right: 12px;
           }
-          .np-three-col > div { border-bottom: 1px solid var(--border); }
+          .np-three-col > div { border-bottom: 0; }
           .np-three-col > div:last-child { border-bottom: none; }
         }
         @media (max-width: 479px) {

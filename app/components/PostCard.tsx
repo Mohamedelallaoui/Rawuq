@@ -14,15 +14,15 @@ export default function PostCard({ post, featured, size = 'medium' }: PostCardPr
   /* ── PER-SIZE DESIGN TOKENS ─────────────────────────────────── */
   const config = {
     featured: {
-      imgHeight: 320,
-      titleSize: 28,
+      imgHeight: 480,
+      titleSize: 32,
       titleColor: '#ffffff',
       bg: '#000000',
-      excerptColor: 'rgba(255,255,255,0.65)',
-      metaColor: 'rgba(255,255,255,0.4)',
+      excerptColor: 'rgba(255,255,255,0.70)',
+      metaColor: 'rgba(255,255,255,0.45)',
       accentColor: '#2997ff',
-      padding: '28px 32px',
-      minHeight: 420,
+      padding: '32px 40px',
+      minHeight: 480,
       showExcerpt: true,
       showImage: true,
       layout: 'vertical' as const,
@@ -149,7 +149,117 @@ export default function PostCard({ post, featured, size = 'medium' }: PostCardPr
     )
   }
 
-  /* ── VERTICAL (featured / medium / small) ───────────────────── */
+  /* ── FEATURED: full-width edge-to-edge hero with overlay ─────── */
+  if (effectiveSize === 'featured') {
+    return (
+      <Link
+        href={`/posts/${post.slug?.current}`}
+        style={{ textDecoration: 'none', display: 'block' }}
+      >
+        <article
+          style={{
+            position: 'relative',
+            width: '100%',
+            height: c.minHeight,
+            overflow: 'hidden',
+            cursor: 'pointer',
+            background: '#111',
+          }}
+          onMouseEnter={e => {
+            const img = e.currentTarget.querySelector<HTMLElement>('.hero-img')
+            if (img) img.style.transform = 'scale(1.03)'
+          }}
+          onMouseLeave={e => {
+            const img = e.currentTarget.querySelector<HTMLElement>('.hero-img')
+            if (img) img.style.transform = 'scale(1)'
+          }}
+        >
+          {/* Full-bleed image */}
+          {post.mainImage && (
+            <img
+              className="hero-img"
+              src={post.mainImage}
+              alt={post.mainImageAlt || post.title}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center',
+                transition: 'transform 0.6s ease',
+                display: 'block',
+              }}
+            />
+          )}
+
+          {/* Gradient overlay — stronger at bottom for legibility */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0.05) 100%)',
+          }} />
+
+          {/* Text content pinned to bottom */}
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
+            left: 0,
+            padding: c.padding,
+            direction: 'rtl',
+          }}>
+            {post.categories?.[0] && (
+              <span style={{
+                fontSize: 11, fontWeight: 700, letterSpacing: '0.14em',
+                textTransform: 'uppercase' as const,
+                color: c.accentColor, display: 'inline-block', marginBottom: 10,
+                background: 'rgba(41,151,255,0.15)',
+                border: '1px solid rgba(41,151,255,0.4)',
+                borderRadius: 4,
+                padding: '2px 8px',
+              }}>
+                {post.categories[0]}
+              </span>
+            )}
+            <h2 style={{
+              fontSize: c.titleSize,
+              fontWeight: 800,
+              lineHeight: 1.3,
+              color: c.titleColor,
+              marginBottom: 10,
+              maxWidth: 780,
+              textShadow: '0 2px 12px rgba(0,0,0,0.5)',
+            }}>
+              {post.title}
+            </h2>
+            {post.excerpt && (
+              <p style={{
+                fontSize: 14, lineHeight: 1.7,
+                color: c.excerptColor,
+                marginBottom: 14,
+                maxWidth: 600,
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+              } as any}>
+                {post.excerpt}
+              </p>
+            )}
+            <span style={{ fontSize: 12, color: c.metaColor, display: 'block' }}>
+              {post.author && `${post.author} · `}
+              {post.publishedAt && new Date(post.publishedAt).toLocaleDateString('ar-MA', {
+                month: 'long', day: 'numeric', year: 'numeric',
+              })}
+            </span>
+          </div>
+        </article>
+      </Link>
+    )
+  }
+
+  /* ── VERTICAL (medium / small) ───────────────────────────────── */
   return (
     <Link
       href={`/posts/${post.slug?.current}`}
@@ -158,12 +268,11 @@ export default function PostCard({ post, featured, size = 'medium' }: PostCardPr
       <article
         style={{
           background: c.bg,
-          borderRadius: effectiveSize === 'featured' ? 16 : 10,
+          borderRadius: 10,
           overflow: 'hidden',
           transition: 'transform 0.25s ease, box-shadow 0.25s ease',
           cursor: 'pointer',
-          border: effectiveSize !== 'featured' ? '1px solid var(--border)' : 'none',
-          minHeight: c.minHeight || 'auto',
+          border: '1px solid var(--border)',
           height: '100%',
           display: 'flex',
           flexDirection: 'column',

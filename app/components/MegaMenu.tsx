@@ -102,7 +102,7 @@ export default function MegaMenu() {
             placeholder="ابحث في راووق..."
             autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
             style={{
-              flex: 1, minWidth: 0, height: 38,
+              flex: 1, minWidth: 0, height: 10,
               padding: '0 12px',
               border: `1px solid ${borderColor}`, borderRadius: 8,
               fontSize: 16, background: inputBg, color: textColor,

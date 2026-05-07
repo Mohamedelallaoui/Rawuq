@@ -25,7 +25,7 @@ export default function NavBar() {
         //   [Logo RIGHT] ... [Categories/Hamburger MIDDLE] ... [Icons LEFT]
         padding: '0 16px', height: 44,
         display: 'flex', alignItems: 'center',
-        flexDirection: 'row',          // LTR — we place items manually
+       flexDirection: 'row-reverse',         // LTR — we place items manually
         justifyContent: 'space-between',
       }}>
 
@@ -60,7 +60,7 @@ export default function NavBar() {
             src="/logo.svg"
             alt="راووق"
             className="logo"
-            style={{ height: 18, width: 'auto', cursor: 'pointer', display: 'block' }}
+            style={{ height: 70, width: 'auto', cursor: 'pointer', display: 'block' }}
           />
         </Link>
 
